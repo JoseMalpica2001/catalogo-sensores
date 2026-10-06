@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Catálogo mundial de sensores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1EE; --surface:#FAFBF9; --ink:#0E1C26; --muted:#506068; --rule:#C9D1CF;
+  --accent:#0B6E6E; --accent-ink:#FFFFFF; --price:#8A5A00; --focus:#0B6E6E;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1518; --surface:#141F23; --ink:#E6EEEC; --muted:#93A5A8; --rule:#27373B;
+    --accent:#4FC3BD; --accent-ink:#06211F; --price:#E5B349; --focus:#4FC3BD;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1518; --surface:#141F23; --ink:#E6EEEC; --muted:#93A5A8; --rule:#27373B;
+  --accent:#4FC3BD; --accent-ink:#06211F; --price:#E5B349; --focus:#4FC3BD;
+}
+html{height:100%;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 170px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--rule);padding:12px 16px 10px}
+.wrap{max-width:860px;margin:0 auto}
+h1{font-size:1.25rem;font-weight:800;letter-spacing:-.01em;margin:0 0 8px;display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+h1 small{font-weight:500;font-size:.8rem;color:var(--muted)}
+.search{position:relative}
+.search input{width:100%;font:inherit;font-size:1rem;padding:12px 44px 12px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--surface);color:var(--ink)}
+.search input::placeholder{color:var(--muted)}
+.search button{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;border-radius:8px;background:transparent;color:var(--muted);font-size:1.3rem;cursor:pointer;display:none}
+.search.has button{display:block}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font:inherit;font-size:.85rem;font-weight:500;padding:6px 11px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--c,var(--muted));display:inline-block}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tools{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:8px;font-size:.85rem;color:var(--muted)}
+.tools select{font:inherit;font-size:.85rem;padding:5px 8px;border-radius:8px;border:1px solid var(--rule);background:var(--surface);color:var(--ink)}
+.tools .sel{display:flex;gap:6px;flex-wrap:wrap}
+main{padding:12px 16px 64px}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+details{background:var(--surface);border:1px solid var(--rule);border-left:5px solid var(--c);border-radius:8px}
+summary{list-style:none;cursor:pointer;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:baseline}
+summary::-webkit-details-marker{display:none}
+.name{font-weight:700;font-size:1rem}
+.price{font-weight:700;color:var(--price);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.meta{grid-column:1 / -1;color:var(--muted);font-size:.88rem}
+details[open] summary{border-bottom:1px dashed var(--rule)}
+dl{margin:0;padding:10px 14px 14px;display:grid;gap:10px}
+dt{font-weight:700;font-size:.8rem;color:var(--muted)}
+dd{margin:2px 0 0;max-width:68ch}
+mark{background:color-mix(in srgb,var(--accent) 28%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+.empty{padding:32px 8px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:1.05rem;margin-bottom:4px}
+.empty button{margin-top:12px;font:inherit;padding:8px 14px;border-radius:8px;border:0;background:var(--accent);color:var(--accent-ink);font-weight:700;cursor:pointer}
+footer{max-width:860px;margin:24px auto 0;font-size:.82rem;color:var(--muted)}
+@media (min-width:700px){
+  .bar{padding:14px 24px 12px} main{padding:16px 24px 64px}
+  dl{grid-template-columns:1fr 1fr}
+  dl .wide{grid-column:1 / -1}
+}
+@media (prefers-reduced-motion:no-preference){ details{transition:border-color .15s} }
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="wrap">
+    <h1>Catálogo de sensores <small id="count"></small></h1>
+    <div class="search" id="sbox">
+      <input id="q" type="search" inputmode="search" autocomplete="off" spellcheck="false"
+        placeholder="Busca: temperatura, Bosch, concreto, 0–100 USD…" aria-label="Buscar sensores">
+      <button id="clear" type="button" aria-label="Borrar búsqueda">×</button>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Filtrar por familia"></div>
+    <div class="tools">
+      <div class="sel">
+        <label>Precio
+          <select id="price">
+            <option value="0">Todos</option>
+            <option value="10">Desde menos de $10</option>
+            <option value="100">Desde menos de $100</option>
+            <option value="1000">Desde menos de $1 000</option>
+            <option value="10000">Desde menos de $10 000</option>
+            <option value="10001">Desde $10 000 o más</option>
+          </select>
+        </label>
+        <label>Orden
+          <select id="sort">
+            <option value="rel">Relevancia</option>
+            <option value="az">Nombre A–Z</option>
+            <option value="asc">Precio: menor a mayor</option>
+            <option value="desc">Precio: mayor a menor</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <ul class="list" id="list"></ul>
+    <footer>Los precios son rangos aproximados en USD (unidad suelta, varían por país, marca, volumen e impuestos). Los fabricantes son ejemplos representativos, no una lista completa. Verifica siempre con el proveedor antes de comprar.</footer>
+  </div>
+</main>
+
+<script>
+var FAM = {
+  T:["Temperatura","#D9480F"], P:["Presión","#1971C2"], M:["Movimiento e inercia","#7048E8"],
+  F:["Fuerza y deformación","#C2255C"], D:["Posición y distancia","#2B8A3E"], L:["Flujo y nivel","#0C8599"],
+  S:["Sonido y vibración","#E67700"], O:["Luz e imagen","#F08C00"], R:["Radiación","#5F3DC4"],
+  G:["Gases y clima","#087F5B"], A:["Agua y suelo","#1864AB"], E:["Eléctricos y magnéticos","#A61E4D"],
+  B:["Biomédicos","#E03131"], C:["Civil y geotecnia","#5C940D"], I:["Consumo e IoT","#495057"],
+  Q:["Cuánticos y emergentes","#9C36B5"]
+};
+/* [nombre, familia, qué registra, rango/precisión típica, usos, fabricantes (ejemplos), precio mín USD, precio máx USD] */
+var D = [
+/* Temperatura */
+["Termopar tipo K","T","Temperatura por efecto Seebeck (unión de dos metales)","−200 a 1 250 °C, ±1,5 °C","Hornos, fundición, motores, industria pesada","Omega, Watlow, Endress+Hauser",5,80],
+["RTD Pt100 / Pt1000","T","Temperatura por cambio de resistencia del platino","−200 a 850 °C, ±0,1 °C","Procesos, farmacia, alimentos, laboratorio","Heraeus, WIKA, Endress+Hauser",15,150],
+["Termistor NTC","T","Temperatura por resistencia de semiconductor","−50 a 150 °C, ±0,2 a 1 °C","Electrodomésticos, baterías, automoción","Vishay, TDK (EPCOS), Murata",0.1,3],
+["Sensor digital de temperatura (DS18B20, TMP117)","T","Temperatura con salida digital calibrada","−55 a 125 °C, ±0,1 a 0,5 °C","IoT, cadena de frío, electrónica","Analog Devices, Texas Instruments",1,6],
+["Pirómetro infrarrojo","T","Temperatura sin contacto por radiación IR","−50 a 3 000 °C, ±1 a 2 %","Metalurgia, mantenimiento eléctrico, hornos","Fluke, Optris, Raytek",30,2000],
+["Cámara termográfica","T","Imagen de temperatura de toda una escena","−20 a 2 000 °C, resolución 80×60 a 1 280×1 024","Inspección eléctrica, edificios, incendios, minería","Teledyne FLIR, Hikmicro, Seek Thermal",250,30000],
+["Fibra óptica de temperatura distribuida (DTS)","T","Perfil de temperatura a lo largo de kilómetros de fibra","Hasta 30+ km, ±0,1 a 1 °C","Pozos, cables de potencia, túneles, presas","Silixa, Luna, Sensornet",20000,100000],
+/* Presión */
+["Transductor de presión piezoresistivo","P","Presión por deformación de una membrana","0–1 mbar a 1 500 bar, ±0,1 a 0,5 %","Hidráulica, neumática, procesos, automoción","Bosch, Honeywell, WIKA, Keller",10,500],
+["Transmisor de presión capacitivo","P","Presión diferencial, manométrica o absoluta","0–10 mbar a 700 bar, ±0,04 a 0,075 %","Industria de proceso, petróleo y gas, agua","Emerson (Rosemount), Endress+Hauser, Yokogawa",200,1500],
+["Barómetro MEMS (BMP390, BME680)","P","Presión atmosférica y altitud","300–1 250 hPa, ±0,5 hPa","Drones, móviles, relojes, estaciones meteorológicas","Bosch Sensortec, STMicroelectronics",1,10],
+["Vacuómetro Pirani","P","Presión de vacío por conductividad térmica del gas","10⁻⁴ a 1 000 mbar","Cámaras de vacío, semiconductores, laboratorio","Pfeiffer Vacuum, Inficon, Edwards",300,1500],
+["Piezómetro de cuerda vibrante","P","Presión de poros del agua en suelo o roca","0,35 a 3 MPa, ±0,1 % F.S.","Presas, taludes, relaves, túneles","Geokon, Roctest, Sisgeo, RST Instruments",150,600],
+/* Movimiento */
+["Acelerómetro MEMS","M","Aceleración en 1 a 3 ejes","±2 a ±400 g, ruido 25–400 µg/√Hz","Celulares, autos (airbag), vibración, sísmica","Analog Devices, Bosch, STMicroelectronics, TDK InvenSense",0.5,20],
+["Acelerómetro piezoeléctrico IEPE","M","Vibración de alta frecuencia","Hasta 10+ kHz, 10–1 000 mV/g","Mantenimiento predictivo, pruebas de estructuras","PCB Piezotronics, Brüel & Kjær, Kistler",100,1000],
+["Giroscopio MEMS","M","Velocidad angular","±125 a ±2 000 °/s","Estabilización de drones, cámaras, vehículos","STMicroelectronics, Bosch, TDK InvenSense",0.5,15],
+["IMU de 6 y 9 ejes","M","Aceleración, rotación y campo magnético combinados","Acel. ±16 g, giro ±2 000 °/s","Robótica, realidad virtual, navegación, wearables","Bosch (BNO055), TDK InvenSense, Xsens, VectorNav",2,3000],
+["Giroscopio de fibra óptica (FOG)","M","Rotación de alta precisión por efecto Sagnac","Deriva <0,01 °/h","Navegación de barcos, aviones y submarinos, perforación","Honeywell, Exail (iXblue), Northrop Grumman",5000,100000],
+["Inclinómetro MEMS / servo","M","Inclinación respecto a la gravedad","±1° a ±90°, ±0,001 a 0,1°","Grúas, puentes, taludes, paneles solares","Murata, Jewell Instruments, Geokon, Sisgeo",20,1500],
+/* Fuerza */
+["Celda de carga","F","Peso o fuerza (tracción/compresión)","1 g a 1 000 t, clase C3 (±0,02 %)","Básculas, camiones, silos, laboratorio de ensayos","HBM, Mettler Toledo, Flintec, Zemic",20,3000],
+["Galga extensiométrica","F","Deformación unitaria de una superficie","Hasta ±5 000 µε","Ensayos de materiales, puentes, aeronáutica","Vishay Micro-Measurements, HBM, Kyowa",5,50],
+["Sensor de fuerza resistivo (FSR) y táctil","F","Presión de contacto, mapas de presión","0,1 a 100 N (FSR)","Robótica, calzado, ergonomía, asientos","Interlink Electronics, Tekscan, Sensel",5,150],
+["Torquímetro","F","Par torsor en ejes rotativos","0,1 N·m a 500 kN·m","Motores, transmisiones, ensayos","HBM, Kistler, Lorenz Messtechnik",500,8000],
+["Sensor de fibra óptica Bragg (FBG)","F","Deformación y temperatura sin interferencia eléctrica","±2 500 µε, sensores multiplexados","Puentes, túneles, aviones, oleoductos","HBM FiberSensing, Luna, Smart Fibres",300,3000],
+/* Posición y distancia */
+["Receptor GNSS / GPS (RTK)","D","Posición global por satélites","±2,5 m (estándar); ±1 a 2 cm (RTK)","Topografía, agricultura, drones, monitoreo de deformaciones","u-blox, Trimble, Septentrio, Garmin, Leica",5,15000],
+["LiDAR (móvil o aéreo)","D","Nube de puntos 3D por pulsos láser","Alcance 10 m a 6 km, ±1 a 5 cm","Autos autónomos, topografía, minería, bosques","Ouster (fusionada con Velodyne), Hesai, Livox, RIEGL",100,80000],
+["Escáner láser terrestre (TLS)","D","Nube de millones de puntos de edificios y terreno","Hasta 1 km, ±1 a 3 mm","As-built, patrimonio, túneles, control de deformaciones","Leica Geosystems, FARO, Trimble, RIEGL",20000,150000],
+["Radar de ondas milimétricas (mmWave)","D","Distancia, velocidad y ángulo de objetos","0,1 a 250 m, 24/60/77 GHz","Automoción, presencia humana, seguridad","Texas Instruments, Infineon, Bosch",5,500],
+["Sensor ultrasónico de distancia","D","Distancia por eco de ultrasonido","2 cm a 10 m, ±1 a 3 mm","Robótica, estacionamiento, nivel de tanques","MaxBotix, Pepperl+Fuchs, SICK",3,200],
+["Encoder óptico / magnético","D","Posición y velocidad angular o lineal","Hasta 10⁸ pulsos por vuelta","Motores, CNC, robots, máquinas","Heidenhain, Renishaw, Omron",20,1500],
+["LVDT","D","Desplazamiento lineal de alta precisión","±1 mm a ±500 mm, linealidad 0,1 %","Ensayos de laboratorio, válvulas, deformación de estructuras","TE Connectivity, Micro-Epsilon, Honeywell",100,1000],
+["Telémetro láser","D","Distancia punto a punto","0,05 a 200 m, ±1 a 3 mm","Construcción, levantamientos, industria","Leica Disto, Bosch, Keyence",30,3000],
+["Estación total","D","Ángulos y distancias para coordenadas exactas","Precisión angular 1\" a 5\", distancia ±1 a 2 mm","Topografía, replanteo de obras, monitoreo de prismas","Leica Geosystems, Trimble, Topcon",3000,20000],
+["Sensor de proximidad inductivo","D","Presencia de metal sin contacto","0,8 a 40 mm","Líneas de producción, automatización","Omron, Balluff, SICK",10,60],
+["Cámara de profundidad (ToF / luz estructurada)","D","Mapa de profundidad 3D","0,2 a 10 m","Robótica, reconocimiento facial, realidad aumentada","Orbbec, Sony, Microsoft (Azure Kinect)",50,400],
+/* Flujo y nivel */
+["Caudalímetro electromagnético","L","Caudal de líquidos conductores","DN2 a DN3 000, ±0,2 a 0,5 %","Agua potable, aguas residuales, minería","Endress+Hauser, Siemens, Krohne, Emerson",500,5000],
+["Caudalímetro Coriolis","L","Caudal másico, densidad y temperatura","±0,05 a 0,1 %","Petróleo, química, alimentos, transferencia de custodia","Emerson (Micro Motion), Endress+Hauser, Krohne",3000,15000],
+["Caudalímetro ultrasónico (clamp-on)","L","Caudal por tiempo de tránsito, sin cortar la tubería","DN15 a DN6 000, ±1 %","Auditorías de agua, tuberías existentes","Flexim, Baker Hughes (Panametrics), Fuji Electric",500,8000],
+["Sensor de nivel por radar","L","Nivel de líquidos y sólidos por microondas","Hasta 120 m, ±1 a 3 mm","Tanques, silos, relaves, ríos","VEGA, Endress+Hauser, Siemens",400,3000],
+["Sensor de nivel hidrostático","L","Nivel por presión de la columna de agua","0–1 a 200 m, ±0,1 a 0,25 %","Pozos, embalses, cisternas","Keller, Campbell Scientific, Solinst, In-Situ",60,800],
+["Anemómetro ultrasónico","L","Velocidad y dirección del viento","0–60 m/s, ±2 %","Aerogeneradores, grúas, meteorología","Gill Instruments, Vaisala, Campbell Scientific",300,3000],
+/* Sonido y vibración */
+["Micrófono MEMS","S","Sonido en dispositivos pequeños","SNR 60–70 dB","Celulares, audífonos, asistentes de voz","Knowles, TDK, Infineon",0.5,5],
+["Micrófono de medición y sonómetro","S","Nivel de presión sonora calibrado","20 a 140 dB(A), clase 1 o 2","Ruido ambiental, ocupacional, acústica","Brüel & Kjær, GRAS, NTi Audio, PCB",300,3000],
+["Hidrófono","S","Sonido bajo el agua","10 Hz a 200 kHz","Sonar, vida marina, sismología marina, defensa","Teledyne RESON, Brüel & Kjær, Aquarian Audio",100,10000],
+["Sismómetro de banda ancha","S","Movimiento del suelo (terremotos, vibración)","0,008 a 100 Hz","Redes sísmicas, volcanes, monitoreo de presas","Nanometrics, Kinemetrics, Güralp, Streckeisen",3000,30000],
+["Geófono","S","Vibración del terreno","4,5 a 100 Hz","Exploración sísmica, minería, vibraciones de obras","Geospace, ION Geophysical, Sercel",30,300],
+["Sensor de emisión acústica","S","Ondas de tensión al crecer una grieta","20 kHz a 1 MHz","Recipientes a presión, puentes, ensayos no destructivos","MISTRAS (Physical Acoustics), Vallen Systeme",300,1500],
+/* Luz e imagen */
+["Fotodiodo","O","Intensidad de luz","UV a IR, 190–1 100 nm","Medidores, comunicaciones ópticas, control","Hamamatsu, Vishay, OSRAM",0.3,30],
+["Sensor de imagen CMOS","O","Imagen en color o monocromática","0,3 a 200 MP","Celulares, cámaras, seguridad, autos","Sony, Samsung, OmniVision, onsemi",1,1000],
+["Sensor CCD científico","O","Imagen de bajo ruido y alta sensibilidad","Enfriado, hasta 100 MP","Astronomía, microscopía, espectroscopía","Teledyne e2v, Hamamatsu, Andor",2000,50000],
+["Cámara hiperespectral","O","Cientos de bandas de color por píxel","400–2 500 nm, 100–300 bandas","Agricultura de precisión, minería, reciclaje, arte","Headwall, Specim, Resonon",10000,100000],
+["Sensor de luz ambiental","O","Luminosidad y color del entorno","0,01 a 100 000 lux","Brillo de pantallas, iluminación inteligente","ams OSRAM, Vishay, Broadcom",0.3,3],
+["Fotomultiplicador","O","Fotones individuales","Ganancia 10⁶ a 10⁷","Física de partículas, medicina nuclear, laboratorios","Hamamatsu, ET Enterprises",500,5000],
+["Detector PIR (infrarrojo pasivo)","O","Movimiento de cuerpos calientes","Alcance 5–12 m","Alarmas, luces automáticas, domótica","Panasonic, Excelitas, Murata",1,5],
+["Sensor UV / índice UV","O","Radiación ultravioleta solar o de esterilización","UVA, UVB, UVC","Meteorología, esterilización, industria","Vishay, Hamamatsu, Silicon Labs",1,50],
+/* Radiación */
+["Contador Geiger-Müller","R","Radiación ionizante (beta, gamma)","0,01 µSv/h a 100 mSv/h","Seguridad radiológica, minería, medicina","Mirion, Ludlum, Polimaster",30,600],
+["Detector de centelleo NaI(Tl)","R","Energía de rayos gamma (identifica isótopos)","Resolución ~7 % a 662 keV","Medicina nuclear, seguridad de fronteras, prospección","Mirion, Saint-Gobain, AMETEK (ORTEC)",500,8000],
+["Detector de germanio de alta pureza (HPGe)","R","Espectro gamma de máxima resolución","Resolución ~0,2 % a 1,33 MeV","Laboratorios nucleares, ambiental, arqueometría","Mirion (Canberra), AMETEK (ORTEC)",20000,100000],
+["Dosímetro personal","R","Dosis acumulada de radiación","0,01 mSv a 10 Sv","Trabajadores en hospitales, industria, nuclear","Landauer, Mirion, Thermo Fisher",50,500],
+["Detector plano de rayos X","R","Imagen de rayos X digital","Matriz de 14×17 pulgadas","Radiografía médica e industrial, inspección","Varex, Canon, Teledyne DALSA",10000,150000],
+["Detector de neutrones (He-3, BF₃)","R","Flujo de neutrones","Térmicos y rápidos","Plantas nucleares, control de fronteras, exploración","Mirion, Centronic, Thermo Fisher",1000,20000],
+/* Gases y clima */
+["Sensor de CO₂ NDIR","G","Dióxido de carbono por absorción infrarroja","0–5 000 ppm, ±30 ppm","Calidad del aire interior, invernaderos, HVAC","Sensirion, SenseAir, Gas Sensing Solutions",5,60],
+["Sensor electroquímico de gas (CO, H₂S, NO₂)","G","Gases tóxicos específicos","0–1 000 ppm según gas","Minería, túneles, seguridad industrial","Alphasense, Figaro, Dräger",10,80],
+["Sensor de gas semiconductor (MOX)","G","Gases combustibles y compuestos volátiles","Sensibilidad baja a media","Detectores domésticos, calidad del aire","Figaro, Sensirion, Bosch",1,15],
+["Detector PID (compuestos orgánicos volátiles)","G","Vapores de solventes y COV","0,1 ppb a 10 000 ppm","Higiene industrial, emergencias químicas","Ion Science, RAE Systems (Honeywell), Alphasense",100,600],
+["Sensor de material particulado (PM2.5 / PM10)","G","Partículas por dispersión láser","0–1 000 µg/m³","Redes de contaminación, purificadores","Plantower, Sensirion, Honeywell",5,30],
+["Sensor de oxígeno","G","Concentración de O₂","0–25 % vol","Espacios confinados, medicina, combustión","Teledyne, Alphasense, Dräger",20,150],
+["Detector de metano (catalítico / IR)","G","Gases explosivos","0–100 % LEL","Minas, gasoductos, plantas","Dräger, MSA, Honeywell",50,500],
+["Sensor de humedad relativa","G","Humedad del aire","0–100 %HR, ±1,5 a 3 %","Clima, almacenes, museos, HVAC","Sensirion, Vaisala, Bosch",1,100],
+["Pluviómetro de balancín","G","Precipitación","Resolución 0,1 a 0,2 mm","Estaciones meteorológicas, hidrología, alertas de huaicos","Davis, Texas Electronics, Campbell Scientific",50,400],
+["Piranómetro","G","Radiación solar global","0–2 000 W/m²","Plantas solares, agricultura, clima","Kipp & Zonen, Hukseflux, Apogee",150,3000],
+/* Agua y suelo */
+["Electrodo de pH","A","Acidez o alcalinidad del agua","0–14 pH, ±0,01 a 0,1","Potabilización, acuicultura, laboratorio","Hanna, Mettler Toledo, Atlas Scientific, Endress+Hauser",10,500],
+["Sensor de conductividad / TDS","A","Sales disueltas en agua","0,1 µS/cm a 200 mS/cm","Riego, calderas, control de agua","YSI, Hach, Atlas Scientific",30,800],
+["Turbidímetro","A","Turbidez (partículas en suspensión)","0–4 000 NTU","Plantas de agua potable, ríos, relaves","Hach, YSI, Endress+Hauser",100,3000],
+["Sensor de oxígeno disuelto","A","Oxígeno en agua","0–20 mg/L, ±0,1 a 0,2","Acuicultura, tratamiento de aguas, limnología","YSI, Hach, In-Situ",100,2000],
+["Sensor de cloro libre","A","Desinfectante residual en agua","0–5 mg/L","Agua potable, piscinas, industria alimentaria","Hach, ProMinent, Endress+Hauser",300,2000],
+["Sensor de humedad de suelo (capacitivo / TDR)","A","Contenido volumétrico de agua en suelo","0–100 % VWC, ±1 a 3 %","Riego, agricultura, taludes, geotecnia","METER Group, Campbell Scientific, Sentek",5,500],
+["Sonda multiparamétrica de agua","A","pH, conductividad, OD, turbidez, temperatura juntos","Multi-parámetro","Monitoreo de ríos, lagos, vertimientos mineros","YSI (Xylem), In-Situ, OTT Hydromet",3000,15000],
+["CTD oceanográfico","A","Conductividad, temperatura y profundidad del mar","Profundidades hasta 6 000 m","Oceanografía, pesca, cables submarinos","Sea-Bird Scientific, RBR, Valeport",3000,20000],
+["Ecosonda / sonar batimétrico","A","Profundidad y relieve del fondo de agua","0,3 a 11 000 m","Dragados, puertos, pesca, hidrografía","Teledyne, Kongsberg, Garmin",200,100000],
+/* Eléctricos y magnéticos */
+["Sensor de efecto Hall","E","Campo magnético y posición","±10 a ±1 000 mT","Motores, posición de pedales, sensores de corriente","Allegro, Infineon, Melexis",0.3,5],
+["Sensor de corriente (Hall / transformador CT)","E","Corriente eléctrica continua o alterna","mA a miles de A","Medidores de energía, variadores, baterías","LEM, Allegro, Honeywell",3,80],
+["Bobina Rogowski","E","Corriente alterna alta, flexible","Hasta 100 kA","Plantas, subestaciones, auditorías","PEM, Fluke, Chauvin Arnoux",50,500],
+["Sensor magnético TMR / GMR","E","Campos magnéticos débiles","µT","Encoders, discos duros, vehículos eléctricos","Crocus, NVE, TDK",1,10],
+["Detector de metales (inducción de pulso)","E","Objetos metálicos enterrados","Hasta 2–3 m de profundidad","Arqueología, seguridad, minería artesanal","Minelab, Garrett, XP Metal Detectors",100,1500],
+["Magnetómetro de protones / Overhauser","E","Campo magnético terrestre total","±0,01 a 0,1 nT","Geología, arqueología, exploración minera (en dron o tierra)","GEM Systems, Geometrics, Scintrex",5000,30000],
+["Magnetómetro de vapor alcalino (cesio / potasio)","E","Campo magnético terrestre, muy sensible","<0,001 nT/√Hz","Prospección de oro y minerales con drones, UXO","Geometrics, GEM Systems, SENSYS",10000,50000],
+["Georradar (GPR)","E","Estructuras enterradas por ondas electromagnéticas","Penetración 0,5 a 30 m","Tuberías, concreto, suelos, arqueología","GSSI, Guideline Geo (MALÅ), Sensors & Software, Proceq",10000,60000],
+["Equipo de resistividad / polarización inducida","E","Resistividad eléctrica del subsuelo","Profundidad de 10 a 500+ m","Agua subterránea, minería, geotecnia","Iris Instruments, Zonge, ABEM (Guideline Geo)",10000,50000],
+/* Biomédicos */
+["Pulsioxímetro / PPG","B","Saturación de oxígeno (SpO₂) y pulso","70–100 % SpO₂, ±2 %","Hospitales, relojes inteligentes, deporte","Masimo, Nellcor (Medtronic), Analog Devices, ams OSRAM",2,500],
+["Sensor de ECG","B","Actividad eléctrica del corazón","0,05–150 Hz, 1 a 12 derivaciones","Cardiología, wearables, ambulancias","Analog Devices, Texas Instruments, AliveCor, Philips",5,300],
+["Sensor de EEG","B","Actividad eléctrica del cerebro","1 a 256 canales","Neurología, sueño, interfaces cerebro-computadora","Emotiv, OpenBCI, g.tec, Brain Products",200,20000],
+["Sensor de EMG","B","Actividad eléctrica de los músculos","10–500 Hz","Rehabilitación, prótesis, deporte","Delsys, Noraxon, Myoware",100,5000],
+["Monitor continuo de glucosa (CGM)","B","Glucosa en líquido intersticial","40–400 mg/dL, ~10–14 días por sensor","Diabetes","Dexcom, Abbott (FreeStyle Libre), Medtronic",50,100],
+["Tensiómetro oscilométrico","B","Presión arterial","0–300 mmHg, ±3 mmHg","Consultorios y hogares","Omron, Withings, A&D",20,100],
+["Termómetro clínico infrarrojo","B","Temperatura corporal sin contacto","34–43 °C, ±0,2 °C","Hospitales, hogares, aeropuertos","Braun, Omron, Exergen",10,60],
+["Biosensor de flujo lateral (prueba rápida)","B","Proteínas, antígenos o anticuerpos","Cualitativo","COVID-19, embarazo, dengue, VIH","Abbott, Roche, SD Biosensor",1,10],
+["Transductor de ultrasonido médico","B","Imágenes internas del cuerpo","1–20 MHz","Obstetricia, cardiología, abdomen, vascular","GE Healthcare, Philips, Mindray",2000,10000],
+/* Civil y geotecnia */
+["Inclinómetro de columna (IPI / servo)","C","Desplazamiento lateral del terreno en profundidad","±0,02 mm/m, hasta 100 m","Taludes, presas, excavaciones, deslizamientos","Geokon, RST Instruments, Sisgeo, Slope Indicator",300,3000],
+["Extensómetro de varillas","C","Desplazamientos dentro de roca o suelo","0–300 mm","Túneles, minas, taludes","Geokon, Roctest, Sisgeo",200,1500],
+["Fisurómetro / medidor de grietas","C","Apertura de grietas en estructuras","0–50 mm, ±0,1 mm","Edificios, puentes, patrimonio","Geokon, Durham Geo, Sisgeo",100,500],
+["Celda de presión de tierra","C","Presión del terreno sobre muros y túneles","Hasta 10 MPa","Muros de contención, túneles, presas","Geokon, Roctest",400,1500],
+["Celda de carga de anclaje","C","Tensión en anclajes y pernos","Hasta 5 000 kN","Anclajes de taludes, pilotes, puentes","Geokon, Roctest",1000,5000],
+["Sensor de madurez del concreto","C","Temperatura del concreto en el tiempo para estimar su resistencia (ASTM C1074)","−20 a 85 °C, hasta 90 días","Desencofrado, postensado, losas, vaciados masivos","Giatec (SmartRock), Maturix (Saint-Gobain), Command Center, Converge",30,150],
+["Sensor de corrosión del acero","C","Potencial y velocidad de corrosión de la armadura","±1 mV, LPR","Puentes, muelles, edificios costeros","Giatec, Force Technology, Protector",200,2000],
+["Esclerómetro digital y medidor de pulso ultrasónico (UPV)","C","Dureza y calidad del concreto sin dañarlo","Velocidad 1 000–6 000 m/s","Evaluación de estructuras, control de calidad","Proceq (Screening Eagle), Controls, Humboldt",3000,8000],
+["Radar interferométrico de taludes (GB-InSAR)","C","Deformación milimétrica de taludes a distancia","Alcance hasta 5 km, ±0,1 mm","Minas a tajo abierto, deslizamientos, presas","IDS GeoRadar (Hexagon), GroundProbe, Reutech",100000,400000],
+/* Consumo e IoT */
+["Lector de huella dactilar","I","Patrón de huella","Capacitivo, óptico o ultrasónico","Celulares, control de acceso, asistencia","Goodix, Synaptics, Fingerprint Cards, Qualcomm",2,20],
+["Panel táctil capacitivo","I","Posición de dedos","Multitáctil 10 puntos","Celulares, tablets, cajeros, electrodomésticos","Synaptics, Goodix, Infineon",2,30],
+["Detector de humo fotoeléctrico","I","Partículas de humo","Alarma a 0,05–0,15 %/ft","Viviendas, oficinas, industrias","Kidde, First Alert, Honeywell",10,50],
+["Lector RFID / NFC","I","Identificación sin contacto de etiquetas","125 kHz a 13,56 MHz (NFC); UHF hasta 10 m","Inventario, pagos, transporte, control de acceso","NXP, Impinj, STMicroelectronics",0.1,10],
+["Sensor de tiempo de vuelo (ToF VL53)","I","Distancia corta por láser infrarrojo","Hasta 4 m","Autoenfoque, robots aspiradora, detección de presencia","STMicroelectronics, ams OSRAM",1,5],
+["Sensor magnético reed","I","Apertura/cierre de puertas por imán","Contacto seco","Alarmas, electrodomésticos","Littelfuse, Hamlin",0.5,5],
+["Sensor TPMS","I","Presión y temperatura de neumáticos","0–800 kPa","Automóviles y camiones","Continental, Sensata (Schrader), Huf",15,60],
+["Sonda lambda","I","Oxígeno en gases de escape","Mezcla aire/combustible","Motores de combustión, control de emisiones","Bosch, Denso, NGK",30,150],
+/* Cuánticos y emergentes */
+["Magnetómetro de centros NV en diamante","Q","Campo magnético a escala micro con sensor cuántico","Sensibilidad ~1 nT/√Hz","Investigación de materiales, biomedicina, navegación","Qnami, SBQuantum, QDM.IO",10000,100000],
+["Magnetómetro SQUID","Q","Campos magnéticos ultradébiles (superconductor)","fT/√Hz","Magnetoencefalografía, geofísica, materiales","Quantum Design, Tristan Technologies, Supracon",20000,250000],
+["Magnetómetro de bombeo óptico (OPM)","Q","Campo magnético del cerebro sin criogenia","~15 fT/√Hz","Magnetoencefalografía portátil, geofísica","QuSpin, Twinleaf, FieldLine",5000,15000],
+["Gravímetro cuántico atómico","Q","Gravedad absoluta por interferometría de átomos fríos","~1 µGal","Geodesia, minería, navegación sin GPS","Exail (iXblue), Muquans, AOSense",300000,800000],
+["Sensor acústico distribuido en fibra (DAS)","Q","Vibración a lo largo de una fibra óptica (miles de micrófonos virtuales)","Hasta 50+ km, resolución 1–10 m","Oleoductos, sísmica, ferrocarriles, seguridad perimetral","Silixa, Luna (OptaSense), Febus Optics",50000,200000],
+["Sensor MEMS con IA integrada (edge AI)","Q","Clasifica patrones directamente en el chip","Acelerómetro + núcleo de aprendizaje","Wearables, mantenimiento predictivo, detección de caídas","STMicroelectronics (ISM330DHCX), Sony (IMX500), Syntiant",5,50],
+["Piel electrónica / sensores vestibles flexibles","Q","Presión, temperatura y sudor en tejidos flexibles","Investigación y primeros productos","Prótesis, robótica blanda, salud personal","Universidades (Stanford, Tokio), Epicore Biosystems, startups",20,500]
+];
+
+function norm(s){ return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+function esc(s){ return s.replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+function fmt(n){ return n>=1000 ? n.toLocaleString("es-PE").replace(/,/g," ") : (n<1 ? n.toString().replace(".",",") : String(n).replace(".",",")); }
+function priceText(a,b){ return "$"+fmt(a)+" – $"+fmt(b); }
+
+var items = D.map(function(r,i){
+  return {i:i,name:r[0],fam:r[1],mide:r[2],rango:r[3],usos:r[4],fab:r[5],pmin:r[6],pmax:r[7],
+    hay:norm([r[0],FAM[r[1]][0],r[2],r[3],r[4],r[5]].join(" | ")), nn:norm(r[0])};
+});
+
+var state = {q:"",fam:"",price:0,sort:"rel"};
+var $q=document.getElementById("q"), $list=document.getElementById("list"), $count=document.getElementById("count"),
+    $chips=document.getElementById("chips"), $sbox=document.getElementById("sbox");
+
+function buildChips(){
+  var html='<button class="chip" type="button" data-f="" aria-pressed="true">Todos</button>';
+  Object.keys(FAM).forEach(function(k){
+    html+='<button class="chip" type="button" data-f="'+k+'" aria-pressed="false" style="--c:'+FAM[k][1]+'"><i></i>'+esc(FAM[k][0])+'</button>';
+  });
+  $chips.innerHTML=html;
+}
+function hl(text,terms){
+  var out=esc(text);
+  if(!terms.length) return out;
+  var n=norm(text), marks=[];
+  terms.forEach(function(t){
+    var p=0; while((p=n.indexOf(t,p))>-1){ marks.push([p,p+t.length]); p+=t.length; }
+  });
+  if(!marks.length || n.length!==text.length) return out;
+  marks.sort(function(a,b){return a[0]-b[0];});
+  var merged=[marks[0]];
+  for(var k=1;k<marks.length;k++){ var L=merged[merged.length-1]; if(marks[k][0]<=L[1]) L[1]=Math.max(L[1],marks[k][1]); else merged.push(marks[k]); }
+  var res="",pos=0;
+  merged.forEach(function(m){ res+=esc(text.slice(pos,m[0]))+"<mark>"+esc(text.slice(m[0],m[1]))+"</mark>"; pos=m[1]; });
+  return res+esc(text.slice(pos));
+}
+function render(){
+  var terms=norm(state.q).split(/\s+/).filter(Boolean);
+  var res=items.filter(function(it){
+    if(state.fam && it.fam!==state.fam) return false;
+    if(state.price){
+      if(state.price===10001){ if(it.pmin<10000) return false; }
+      else if(it.pmin>=state.price) return false;
+    }
+    for(var t=0;t<terms.length;t++){ if(it.hay.indexOf(terms[t])<0) return false; }
+    return true;
+  });
+  res.forEach(function(it){
+    var s=0; terms.forEach(function(t){ if(it.nn.indexOf(t)>-1) s+=3; if(it.nn.indexOf(t)===0) s+=2; if(it.hay.indexOf(t)>-1) s+=1; });
+    it.score=s;
+  });
+  if(state.sort==="rel") res.sort(function(a,b){return b.score-a.score || a.i-b.i;});
+  if(state.sort==="az") res.sort(function(a,b){return a.nn.localeCompare(b.nn,"es");});
+  if(state.sort==="asc") res.sort(function(a,b){return a.pmin-b.pmin;});
+  if(state.sort==="desc") res.sort(function(a,b){return b.pmax-a.pmax;});
+  $count.textContent=res.length+" de "+items.length+" sensores";
+  if(!res.length){
+    $list.innerHTML='<li class="empty"><b>No hay sensores con esa búsqueda</b>Prueba con menos palabras, otra familia o quita el filtro de precio.<br><button type="button" id="reset">Limpiar todo</button></li>';
+    return;
+  }
+  $list.innerHTML=res.map(function(it){
+    var f=FAM[it.fam], open=(terms.length && res.length<=3)?" open":"";
+    return '<li><details style="--c:'+f[1]+'"'+open+'><summary><span class="name">'+hl(it.name,terms)+'</span><span class="price">'+priceText(it.pmin,it.pmax)+'</span><span class="meta">'+esc(f[0])+' · '+hl(it.rango,terms)+'</span></summary>'+
+      '<dl><div class="wide"><dt>Qué registra</dt><dd>'+hl(it.mide,terms)+'</dd></div>'+
+      '<div><dt>Rango y precisión típicos</dt><dd>'+hl(it.rango,terms)+'</dd></div>'+
+      '<div><dt>Precio aproximado (USD)</dt><dd>'+priceText(it.pmin,it.pmax)+'</dd></div>'+
+      '<div class="wide"><dt>Usos</dt><dd>'+hl(it.usos,terms)+'</dd></div>'+
+      '<div class="wide"><dt>Fabricantes (ejemplos)</dt><dd>'+hl(it.fab,terms)+'</dd></div></dl></details></li>';
+  }).join("");
+}
+function sync(){ $sbox.classList.toggle("has",!!$q.value); }
+function resetAll(){
+  state={q:"",fam:"",price:0,sort:"rel"}; $q.value=""; document.getElementById("price").value="0"; document.getElementById("sort").value="rel";
+  Array.prototype.forEach.call($chips.children,function(c){c.setAttribute("aria-pressed",c.dataset.f===""?"true":"false");});
+  sync(); render();
+}
+$q.addEventListener("input",function(){ state.q=$q.value; sync(); render(); });
+document.getElementById("clear").addEventListener("click",function(){ $q.value=""; state.q=""; sync(); render(); $q.focus(); });
+$chips.addEventListener("click",function(e){
+  var b=e.target.closest(".chip"); if(!b) return;
+  state.fam=b.dataset.f;
+  Array.prototype.forEach.call($chips.children,function(c){c.setAttribute("aria-pressed",c===b?"true":"false");});
+  render();
+});
+document.getElementById("price").addEventListener("change",function(e){ state.price=parseInt(e.target.value,10); render(); });
+document.getElementById("sort").addEventListener("change",function(e){ state.sort=e.target.value; render(); });
+$list.addEventListener("click",function(e){ if(e.target.id==="reset") resetAll(); });
+document.addEventListener("keydown",function(e){
+  if(e.key==="/" && document.activeElement!==$q){ e.preventDefault(); $q.focus(); $q.select(); }
+  if(e.key==="Escape" && document.activeElement===$q){ $q.blur(); }
+});
+buildChips(); render();
+</script>
+</body>
+</html>
